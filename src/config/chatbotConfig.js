@@ -23,10 +23,10 @@ export const chatbotConfig = {
     model: "deepseek/deepseek-chat-v3-0324",
     
     // Whether to allow users to override the pre-configured key
-    allowUserOverride: true,
+    allowUserOverride: false,
     
-    // Whether to show API key settings to users
-    showApiKeySettings: true
+    // Whether to show API key settings to users (hide completely when pre-configured)
+    showApiKeySettings: false
   },
 
   // Available Features
