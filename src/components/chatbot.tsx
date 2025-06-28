@@ -264,7 +264,7 @@ export default function Chatbot({
       extra={
         <Space>
           {hasValidApiKey && <Badge status="success" text="Connected" />}
-          {chatbotConfig.api.showApiKeySettings && (
+          {chatbotConfig.api.showApiKeySettings && !chatbotConfig.api.preConfiguredKey && (
             <Button type="text" icon={<Settings />} onClick={toggleSettings} />
           )}
         </Space>
@@ -325,9 +325,11 @@ export default function Chatbot({
             <Typography.Title level={4}>Welcome to Cryptonova AI</Typography.Title>
             <Typography.Text>Enter your API key to start</Typography.Text>
             <br />
-            <Button icon={<Key />} type="primary" onClick={toggleSettings} style={{ marginTop: 16 }}>
-              Configure API Key
-            </Button>
+            {chatbotConfig.api.showApiKeySettings && (
+              <Button icon={<Key />} type="primary" onClick={toggleSettings} style={{ marginTop: 16 }}>
+                Configure API Key
+              </Button>
+            )}
           </div>
         ) : messages.length === 0 ? (
           <div style={{ textAlign: "center", padding: 40 }}>
