@@ -78,6 +78,7 @@ export default function Chatbot({
   const [showSettings, setShowSettings] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [cryptoData, setCryptoData] = useState<CryptoData[]>([]);
   const [newsData, setNewsData] = useState<NewsData[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -104,6 +105,18 @@ export default function Chatbot({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const maskApiKey = (key: string) => {
     return key.length < 8 ? "***" : key.substring(0, 4) + "***" + key.slice(-4);
@@ -278,12 +291,12 @@ export default function Chatbot({
         size="large"
         style={{
           position: 'fixed',
-          bottom: 24,
-          right: 24,
+          bottom: isMobile ? 12 : 24,
+          right: isMobile ? 12 : 24,
           zIndex: 1000,
           borderRadius: '50%',
-          width: 60,
-          height: 60,
+          width: isMobile ? 50 : 60,
+          height: isMobile ? 50 : 60,
           boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
         }}
         onClick={() => setIsVisible(true)}
@@ -295,18 +308,19 @@ export default function Chatbot({
     <Card
       className={className}
       style={{
-        maxWidth: "800px",
+        maxWidth: isMobile ? "calc(100vw - 48px)" : "800px",
         maxHeight: isMinimized ? "auto" : maxHeight,
         margin: "0 auto",
         position: "fixed",
-        bottom: 24,
-        right: 24,
+        bottom: isMobile ? 12 : 24,
+        right: isMobile ? 12 : 24,
         zIndex: 1000,
         boxShadow: "0 4px 24px rgba(0,0,0,0.15)",
         background: "var(--bg-glass)",
         backdropFilter: "blur(15px)",
         border: "1px solid var(--border-light)",
         transition: "all 0.3s ease",
+        width: isMobile ? "calc(100vw - 48px)" : "auto",
       }}
       title={
         <Space>
