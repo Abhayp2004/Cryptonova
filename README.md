@@ -43,7 +43,6 @@ A cutting-edge cryptocurrency tracking and analysis platform featuring Apple-ins
 - **UI Framework**: Ant Design 5.0
 - **Styling**: CSS3 with Custom Properties
 - **Charts**: Chart.js with React integration
-- **AI Integration**: OpenRouter API
 - **Data APIs**: CoinRanking + CryptoNews APIs
 - **Build Tool**: Vite
 - **Icons**: Lucide React
@@ -74,7 +73,7 @@ Create a `.env` file in the root directory:
 
 ```env
 # Optional: For pre-configured chatbot API key
-REACT_APP_OPENROUTER_API_KEY=sk-or-your-api-key-here
+API_KEY=sk-or-your-api-key-here
 ```
 
 ## 🤖 AI Chatbot Setup
@@ -93,10 +92,6 @@ api: {
 ### Option 2: User-provided Keys
 Leave the pre-configured key empty and users will enter their own API keys.
 
-### Get Your API Key
-1. Visit [OpenRouter](https://openrouter.ai/keys)
-2. Sign up and generate an API key
-3. Add it to the configuration
 
 ## 🎨 Design System
 
