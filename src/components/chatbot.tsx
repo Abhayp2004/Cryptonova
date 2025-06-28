@@ -9,8 +9,10 @@ import {
   Space,
   Typography,
   Divider,
+  Dropdown,
+  Menu,
 } from "antd";
-import { Settings, Send, Bot, User, Key } from "lucide-react";
+import { Settings, Send, Bot, User, Key, ChevronDown, ChevronUp, MessageCircle, X } from "lucide-react";
 import { generateContext, chatbotConfig, getApiKey, hasApiKey } from "../config/chatbotConfig";
 
 // Message type
@@ -74,6 +76,8 @@ export default function Chatbot({
   const [tempApiKey, setTempApiKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [isMinimized, setIsMinimized] = useState(false);
   const [cryptoData, setCryptoData] = useState<CryptoData[]>([]);
   const [newsData, setNewsData] = useState<NewsData[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -236,15 +240,63 @@ export default function Chatbot({
     setShowSettings((s) => !s);
   };
 
+  const toggleMinimize = () => setIsMinimized(!isMinimized);
+  const hideChatbot = () => setIsVisible(false);
+
   // Check if we have an API key (either pre-configured or user-provided)
   const hasValidApiKey = hasApiKey();
+
+  // Dropdown menu for chatbot controls
+  const menuItems = [
+    {
+      key: 'minimize',
+      icon: isMinimized ? <ChevronUp size={16} /> : <ChevronDown size={16} />,
+      label: isMinimized ? 'Expand' : 'Minimize',
+      onClick: toggleMinimize,
+    },
+    {
+      key: 'clear',
+      icon: <X size={16} />,
+      label: 'Clear Chat',
+      onClick: clearChat,
+      disabled: messages.length === 0,
+    },
+    {
+      key: 'hide',
+      icon: <X size={16} />,
+      label: 'Hide Chatbot',
+      onClick: hideChatbot,
+    },
+  ];
+
+  // If chatbot is hidden, show a floating button to bring it back
+  if (!isVisible) {
+    return (
+      <Button
+        type="primary"
+        icon={<MessageCircle />}
+        size="large"
+        style={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          zIndex: 1000,
+          borderRadius: '50%',
+          width: 60,
+          height: 60,
+          boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
+        }}
+        onClick={() => setIsVisible(true)}
+      />
+    );
+  }
 
   return (
     <Card
       className={className}
       style={{
         maxWidth: "800px",
-        maxHeight,
+        maxHeight: isMinimized ? "auto" : maxHeight,
         margin: "0 auto",
         position: "fixed",
         bottom: 24,
@@ -254,6 +306,7 @@ export default function Chatbot({
         background: "var(--bg-glass)",
         backdropFilter: "blur(15px)",
         border: "1px solid var(--border-light)",
+        transition: "all 0.3s ease",
       }}
       title={
         <Space>
@@ -264,139 +317,146 @@ export default function Chatbot({
       extra={
         <Space>
           {hasValidApiKey && <Badge status="success" text="Connected" />}
+          <Dropdown
+            menu={{
+              items: menuItems,
+            }}
+            trigger={['click']}
+            placement="bottomRight"
+          >
+            <Button type="text" icon={<ChevronDown />} />
+          </Dropdown>
           {chatbotConfig.api.showApiKeySettings && !chatbotConfig.api.preConfiguredKey && (
             <Button type="text" icon={<Settings />} onClick={toggleSettings} />
           )}
         </Space>
       }
     >
-      {showSettings && chatbotConfig.api.showApiKeySettings && (
-        <div style={{ marginBottom: 16 }}>
-          <Typography.Text strong>API Key Settings</Typography.Text>
-          
-          {chatbotConfig.api.preConfiguredKey ? (
-            <div style={{ marginTop: 8 }}>
-              <Typography.Text type="secondary">
-                Using pre-configured API key: {maskApiKey(chatbotConfig.api.preConfiguredKey)}
-              </Typography.Text>
-              {chatbotConfig.api.allowUserOverride && (
+      {!isMinimized && (
+        <>
+          {showSettings && chatbotConfig.api.showApiKeySettings && (
+            <div style={{ marginBottom: 16 }}>
+              <Typography.Text strong>API Key Settings</Typography.Text>
+              
+              {chatbotConfig.api.preConfiguredKey ? (
+                <div style={{ marginTop: 8 }}>
+                  <Typography.Text type="secondary">
+                    Using pre-configured API key: {maskApiKey(chatbotConfig.api.preConfiguredKey)}
+                  </Typography.Text>
+                  {chatbotConfig.api.allowUserOverride && (
+                    <>
+                      <Input.Password
+                        placeholder="Override with your own API key (optional)"
+                        value={tempApiKey}
+                        onChange={(e) => setTempApiKey(e.target.value)}
+                        style={{ marginTop: 8 }}
+                      />
+                      <Space style={{ marginTop: 8 }}>
+                        <Button type="primary" onClick={handleApiKeySubmit}>
+                          Override
+                        </Button>
+                        <Button onClick={clearApiKey}>Clear Override</Button>
+                      </Space>
+                    </>
+                  )}
+                </div>
+              ) : (
                 <>
                   <Input.Password
-                    placeholder="Override with your own API key (optional)"
+                    placeholder="Enter API key"
                     value={tempApiKey}
                     onChange={(e) => setTempApiKey(e.target.value)}
                     style={{ marginTop: 8 }}
                   />
                   <Space style={{ marginTop: 8 }}>
                     <Button type="primary" onClick={handleApiKeySubmit}>
-                      Override
+                      Save
                     </Button>
-                    <Button onClick={clearApiKey}>Clear Override</Button>
+                    <Button onClick={clearApiKey}>Clear</Button>
                   </Space>
                 </>
               )}
+              
+              <Divider />
             </div>
-          ) : (
-            <>
-              <Input.Password
-                placeholder="Enter API key"
-                value={tempApiKey}
-                onChange={(e) => setTempApiKey(e.target.value)}
-                style={{ marginTop: 8 }}
-              />
-              <Space style={{ marginTop: 8 }}>
-                <Button type="primary" onClick={handleApiKeySubmit}>
-                  Save
-                </Button>
-                <Button onClick={clearApiKey}>Clear</Button>
-              </Space>
-            </>
           )}
-          
-          
-          <Divider />
-        </div>
-      )}
 
-      <div style={{ height: "400px", overflowY: "auto", padding: "8px 0" }}>
-        {!hasValidApiKey ? (
-          <div style={{ textAlign: "center", padding: 40 }}>
-            <Bot size={48} style={{ marginBottom: 16 }} />
-            <Typography.Title level={4}>Welcome to Cryptonova AI</Typography.Title>
-            <Typography.Text>Enter your API key to start</Typography.Text>
-            <br />
-            {chatbotConfig.api.showApiKeySettings && (
-              <Button icon={<Key />} type="primary" onClick={toggleSettings} style={{ marginTop: 16 }}>
-                Configure API Key
-              </Button>
-            )}
-          </div>
-        ) : messages.length === 0 ? (
-          <div style={{ textAlign: "center", padding: 40 }}>
-            <Bot size={48} style={{ marginBottom: 16 }} />
-            <Typography.Title level={4}>Ready to help with crypto!</Typography.Title>
-            <Typography.Text>
-              Try: "{chatbotConfig.suggestedQuestions[0]}" or "{chatbotConfig.suggestedQuestions[1]}"
-            </Typography.Text>
-          </div>
-        ) : (
-          <>
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                style={{
-                  display: "flex",
-                  justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
-                  marginBottom: 16,
-                }}
-              >
-                {msg.role === "assistant" && <Bot style={{ marginRight: 8 }} />}
-                <div
-                  style={{
-                    maxWidth: "80%",
-                    background: msg.role === "user" ? "var(--primary)" : "var(--bg-tertiary)",
-                    color: msg.role === "user" ? "#fff" : "var(--text-primary)",
-                    padding: 12,
-                    borderRadius: 8,
-                    border: msg.role === "assistant" ? "1px solid var(--border-light)" : "none",
-                  }}
-                >
-                  <Typography.Text style={{ whiteSpace: "pre-wrap" }}>
-                    {msg.content}
-                  </Typography.Text>
-                  <div style={{ fontSize: 12, opacity: 0.6 }}>
-                    {msg.timestamp.toLocaleTimeString()}
+          <div style={{ height: "400px", overflowY: "auto", padding: "8px 0" }}>
+            {!hasValidApiKey ? (
+              <div style={{ textAlign: "center", padding: 40 }}>
+                <Bot size={48} style={{ marginBottom: 16 }} />
+                <Typography.Title level={4}>Welcome to Cryptonova AI</Typography.Title>
+                <Typography.Text>Enter your API key to start</Typography.Text>
+                <br />
+                {chatbotConfig.api.showApiKeySettings && (
+                  <Button icon={<Key />} type="primary" onClick={toggleSettings} style={{ marginTop: 16 }}>
+                    Configure API Key
+                  </Button>
+                )}
+              </div>
+            ) : messages.length === 0 ? (
+              <div style={{ textAlign: "center", padding: 40 }}>
+                <Bot size={48} style={{ marginBottom: 16 }} />
+                <Typography.Title level={4}>Ready to help with crypto!</Typography.Title>
+                <Typography.Text>
+                  Try: "{chatbotConfig.suggestedQuestions[0]}" or "{chatbotConfig.suggestedQuestions[1]}"
+                </Typography.Text>
+              </div>
+            ) : (
+              <>
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+                      marginBottom: 16,
+                    }}
+                  >
+                    {msg.role === "assistant" && <Bot style={{ marginRight: 8 }} />}
+                    <div
+                      style={{
+                        maxWidth: "80%",
+                        background: msg.role === "user" ? "var(--primary)" : "var(--bg-tertiary)",
+                        color: msg.role === "user" ? "#fff" : "var(--text-primary)",
+                        padding: 12,
+                        borderRadius: 8,
+                        border: msg.role === "assistant" ? "1px solid var(--border-light)" : "none",
+                      }}
+                    >
+                      <Typography.Text style={{ whiteSpace: "pre-wrap" }}>
+                        {msg.content}
+                      </Typography.Text>
+                      <div style={{ fontSize: 12, opacity: 0.6 }}>
+                        {msg.timestamp.toLocaleTimeString()}
+                      </div>
+                    </div>
+                    {msg.role === "user" && <User style={{ marginLeft: 8 }} />}
                   </div>
-                </div>
-                {msg.role === "user" && <User style={{ marginLeft: 8 }} />}
-              </div>
-            ))}
-            {isLoading && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <Bot />
-                <Typography.Text>Typing...</Typography.Text>
-              </div>
+                ))}
+                {isLoading && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <Bot />
+                    <Typography.Text>Typing...</Typography.Text>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </>
             )}
-            <div ref={messagesEndRef} />
-          </>
-        )}
-      </div>
+          </div>
 
-      {hasValidApiKey && (
-        <form onSubmit={handleSubmit} style={{ display: "flex", marginTop: 12, gap: 8 }}>
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={placeholder}
-            disabled={isLoading}
-          />
-          <Button htmlType="submit" type="primary" disabled={!input.trim() || isLoading} icon={<Send />} />
-        </form>
-      )}
-      {messages.length > 0 && (
-        <Button style={{ marginTop: 8 }} onClick={clearChat}>
-          Clear Chat
-        </Button>
+          {hasValidApiKey && (
+            <form onSubmit={handleSubmit} style={{ display: "flex", marginTop: 12, gap: 8 }}>
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={placeholder}
+                disabled={isLoading}
+              />
+              <Button htmlType="submit" type="primary" disabled={!input.trim() || isLoading} icon={<Send />} />
+            </form>
+          )}
+        </>
       )}
     </Card>
   );
