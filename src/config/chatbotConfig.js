@@ -14,7 +14,7 @@ export const chatbotConfig = {
   api: {
     // Pre-configured API key for all users (set this once and it's available for everyone)
     // Leave empty to require users to enter their own key
-    preConfiguredKey: "", // Add your OpenRouter API key here: "sk-or-..."
+    preConfiguredKey: "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", // Add your OpenRouter API key here: "sk-or-..."
     
     // Alternative: Use environment variable (more secure for production)
     // preConfiguredKey: process.env.REACT_APP_OPENROUTER_API_KEY || "",
