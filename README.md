@@ -72,18 +72,13 @@ npm run dev
 Create a `.env` file in the root directory:
 
 ```env
-# Required: RapidAPI key (used for both market + news APIs)
-VITE_RAPIDAPI_KEY=your_rapidapi_key
-
-# Optional: service-specific keys (override shared key above)
+# Required: RapidAPI keys for market data and news
 VITE_RAPIDAPI_COINRANKING_KEY=your_coinranking_rapidapi_key
 VITE_RAPIDAPI_CRYPTONEWS_KEY=your_cryptonews_rapidapi_key
 
 # Optional: For pre-configured chatbot API key
 API_KEY=sk-or-your-api-key-here
 ```
-
-You can copy from `.env.example` and fill in your real keys.
 
 ## 🤖 AI Chatbot Setup
 

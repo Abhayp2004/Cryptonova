@@ -1,21 +1,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const coinRankingApiKey =
-  import.meta.env.VITE_RAPIDAPI_COINRANKING_KEY ||
-  import.meta.env.VITE_RAPIDAPI_KEY_COINRANKING ||
-  import.meta.env.VITE_RAPIDAPI_KEY;
+const coinRankingApiKey = import.meta.env.VITE_RAPIDAPI_COINRANKING_KEY || '';
+
+if (!coinRankingApiKey) {
+  console.warn('Missing VITE_RAPIDAPI_COINRANKING_KEY. Coin data requests may fail.');
+}
 
 const cryptoApiHeaders = {
+  ...(coinRankingApiKey ? { 'X-RapidAPI-Key': coinRankingApiKey } : {}),
   'X-RapidAPI-Host': 'coinranking1.p.rapidapi.com',
 };
-
-if (coinRankingApiKey) {
-  cryptoApiHeaders['X-RapidAPI-Key'] = coinRankingApiKey;
-} else {
-  console.warn(
-    'Missing RapidAPI key for coin ranking data. Set VITE_RAPIDAPI_COINRANKING_KEY, VITE_RAPIDAPI_KEY_COINRANKING, or VITE_RAPIDAPI_KEY.',
-  );
-}
 
 const baseUrl = 'https://coinranking1.p.rapidapi.com/';
 
