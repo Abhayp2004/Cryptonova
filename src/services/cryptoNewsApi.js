@@ -1,15 +1,19 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const cryptoNewsApiKey = import.meta.env.VITE_RAPIDAPI_CRYPTONEWS_KEY;
-
-if (!cryptoNewsApiKey) {
-  throw new Error('Missing required environment variable: VITE_RAPIDAPI_CRYPTONEWS_KEY');
-}
+const cryptoNewsApiKey =
+  import.meta.env.VITE_RAPIDAPI_CRYPTONEWS_KEY ||
+  import.meta.env.VITE_RAPIDAPI_KEY_CRYPTONEWS ||
+  import.meta.env.VITE_RAPIDAPI_KEY;
 
 const cryptoNewsHeaders = {
-  'x-rapidapi-key': cryptoNewsApiKey,
   'x-rapidapi-host': 'cryptocurrency-news2.p.rapidapi.com',
 };
+
+if (cryptoNewsApiKey) {
+  cryptoNewsHeaders['x-rapidapi-key'] = cryptoNewsApiKey;
+} else {
+  console.warn('Missing RapidAPI key for crypto news. Set VITE_RAPIDAPI_CRYPTONEWS_KEY or VITE_RAPIDAPI_KEY.');
+}
 
 const baseUrl = 'https://cryptocurrency-news2.p.rapidapi.com';
 
