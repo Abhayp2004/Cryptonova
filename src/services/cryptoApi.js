@@ -12,7 +12,9 @@ const cryptoApiHeaders = {
 if (coinRankingApiKey) {
   cryptoApiHeaders['X-RapidAPI-Key'] = coinRankingApiKey;
 } else {
-  console.warn('Missing RapidAPI key for coin ranking data. Set VITE_RAPIDAPI_COINRANKING_KEY or VITE_RAPIDAPI_KEY.');
+  console.warn(
+    'Missing RapidAPI key for coin ranking data. Set VITE_RAPIDAPI_COINRANKING_KEY, VITE_RAPIDAPI_KEY_COINRANKING, or VITE_RAPIDAPI_KEY.',
+  );
 }
 
 const baseUrl = 'https://coinranking1.p.rapidapi.com/';

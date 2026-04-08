@@ -12,7 +12,9 @@ const cryptoNewsHeaders = {
 if (cryptoNewsApiKey) {
   cryptoNewsHeaders['x-rapidapi-key'] = cryptoNewsApiKey;
 } else {
-  console.warn('Missing RapidAPI key for crypto news. Set VITE_RAPIDAPI_CRYPTONEWS_KEY or VITE_RAPIDAPI_KEY.');
+  console.warn(
+    'Missing RapidAPI key for crypto news. Set VITE_RAPIDAPI_CRYPTONEWS_KEY, VITE_RAPIDAPI_KEY_CRYPTONEWS, or VITE_RAPIDAPI_KEY.',
+  );
 }
 
 const baseUrl = 'https://cryptocurrency-news2.p.rapidapi.com';
