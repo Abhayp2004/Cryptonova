@@ -72,10 +72,7 @@ npm run dev
 Create a `.env` file in the root directory:
 
 ```env
-# Required: RapidAPI key (used for both market + news APIs)
-VITE_RAPIDAPI_KEY=your_rapidapi_key
-
-# Optional: service-specific keys (override shared key above)
+# Required: RapidAPI keys
 VITE_RAPIDAPI_COINRANKING_KEY=your_coinranking_rapidapi_key
 VITE_RAPIDAPI_CRYPTONEWS_KEY=your_cryptonews_rapidapi_key
 
@@ -159,3 +156,4 @@ border: 1px solid var(--border-light);
 - Real-time updates
 - News source information
 - Publication dates
+
