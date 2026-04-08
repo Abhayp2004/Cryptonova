@@ -11,11 +11,15 @@ const { Title } = Typography;
 function Homepage() {
   const { data, isFetching, error } = useGetCryptosQuery(10);
   const globalStats = data?.data?.stats;
+  const hasRapidApiKey = Boolean(
+    import.meta.env.VITE_RAPIDAPI_COINRANKING_KEY ||
+    import.meta.env.VITE_RAPIDAPI_KEY_COINRANKING ||
+    import.meta.env.VITE_RAPIDAPI_KEY
+  );
 
   console.log("Homepage - API response:", { data, isFetching, error, globalStats });
 
-  // Show loading until data is fetched
-  if (isFetching || !globalStats) {
+  if (isFetching) {
     return (
       <div className="loading-container animate-fade-in-up">
         <div className="loading-spinner"></div>
@@ -31,7 +35,19 @@ function Homepage() {
     return (
       <div className="loading-container animate-fade-in-up">
         <Title level={3} style={{ color: 'var(--danger)' }}>
-          Error loading data. Please try again later.
+          Error loading data from RapidAPI. Please verify your API key and try again.
+        </Title>
+      </div>
+    );
+  }
+
+  if (!globalStats) {
+    return (
+      <div className="loading-container animate-fade-in-up">
+        <Title level={3} style={{ color: 'var(--warning)' }}>
+          {hasRapidApiKey
+            ? 'No market data available right now. Please refresh in a moment.'
+            : 'RapidAPI key is missing. Add it in `.env` (e.g. `VITE_RAPIDAPI_KEY=...`) and restart the app.'}
         </Title>
       </div>
     );

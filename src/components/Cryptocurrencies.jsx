@@ -11,6 +11,11 @@ function Cryptocurrencies({ simplified }) {
   const { data: cryptoList, isFetching, error } = useGetCryptosQuery(count);
   const [cryptos, setCryptos] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const hasRapidApiKey = Boolean(
+    import.meta.env.VITE_RAPIDAPI_COINRANKING_KEY ||
+    import.meta.env.VITE_RAPIDAPI_KEY_COINRANKING ||
+    import.meta.env.VITE_RAPIDAPI_KEY
+  );
 
   // Update state when API data is available
   useEffect(() => {
@@ -36,12 +41,24 @@ function Cryptocurrencies({ simplified }) {
     );
   }
 
-  if (isFetching || !cryptos.length) {
+  if (isFetching) {
     return (
       <div className="loading-container animate-fade-in-up">
         <div className="loading-spinner"></div>
         <Title level={3} style={{ marginLeft: '1rem', color: 'var(--text-secondary)' }}>
           Loading cryptocurrencies...
+        </Title>
+      </div>
+    );
+  }
+
+  if (!cryptos.length) {
+    return (
+      <div className="loading-container animate-fade-in-up">
+        <Title level={3} style={{ color: 'var(--warning)' }}>
+          {hasRapidApiKey
+            ? 'No cryptocurrencies returned from RapidAPI yet. Please try again shortly.'
+            : 'RapidAPI key is missing. Add `VITE_RAPIDAPI_KEY` in `.env` and restart the app.'}
         </Title>
       </div>
     );
