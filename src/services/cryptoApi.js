@@ -7,7 +7,7 @@ if (!rapidApiKey) {
 }
 
 const cryptoApiHeaders = {
-  'X-RapidAPI-Key': rapidApiKey,
+  ...(rapidApiKey ? { 'X-RapidAPI-Key': rapidApiKey } : {}),
   'X-RapidAPI-Host': 'coinranking1.p.rapidapi.com',
 };
 

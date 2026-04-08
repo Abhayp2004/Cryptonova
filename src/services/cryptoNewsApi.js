@@ -7,7 +7,7 @@ if (!cryptoNewsApiKey) {
 }
 
 const cryptoNewsHeaders = {
-  'x-rapidapi-key': cryptoNewsApiKey,
+  ...(cryptoNewsApiKey ? { 'x-rapidapi-key': cryptoNewsApiKey } : {}),
   'x-rapidapi-host': 'cryptocurrency-news2.p.rapidapi.com',
 };
 
