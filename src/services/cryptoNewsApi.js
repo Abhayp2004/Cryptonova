@@ -1,13 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const cryptoNewsApiKey = import.meta.env.VITE_RAPIDAPI_CRYPTONEWS_KEY;
-
-if (!cryptoNewsApiKey) {
-  throw new Error('Missing required environment variable: VITE_RAPIDAPI_CRYPTONEWS_KEY');
-}
-
 const cryptoNewsHeaders = {
-  'x-rapidapi-key': cryptoNewsApiKey,
+  'x-rapidapi-key': 'a0b17b0793mshed3064bbfadf271p1ae705jsn5eb8a35f39be',
   'x-rapidapi-host': 'cryptocurrency-news2.p.rapidapi.com',
 };
 

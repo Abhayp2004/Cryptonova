@@ -1,13 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const coinRankingApiKey = import.meta.env.VITE_RAPIDAPI_COINRANKING_KEY;
-
-if (!coinRankingApiKey) {
-  throw new Error('Missing required environment variable: VITE_RAPIDAPI_COINRANKING_KEY');
-}
-
 const cryptoApiHeaders = {
-  'X-RapidAPI-Key': coinRankingApiKey,
+  'X-RapidAPI-Key': 'e6afe0a35emsh7fa61b782020375p1c8b5djsn4b239754bb7e',
   'X-RapidAPI-Host': 'coinranking1.p.rapidapi.com',
 };
 
