@@ -2,6 +2,10 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const cryptoNewsApiKey = import.meta.env.VITE_RAPIDAPI_CRYPTONEWS_KEY || '';
 
+if (!cryptoNewsApiKey) {
+  console.warn('Missing VITE_RAPIDAPI_CRYPTONEWS_KEY. Crypto news requests may fail.');
+}
+
 const cryptoNewsHeaders = {
   'x-rapidapi-key': cryptoNewsApiKey,
   'x-rapidapi-host': 'cryptocurrency-news2.p.rapidapi.com',

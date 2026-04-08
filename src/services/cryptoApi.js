@@ -2,6 +2,10 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const rapidApiKey = import.meta.env.VITE_RAPIDAPI_COINRANKING_KEY || '';
 
+if (!rapidApiKey) {
+  console.warn('Missing VITE_RAPIDAPI_COINRANKING_KEY. Coin data requests may fail.');
+}
+
 const cryptoApiHeaders = {
   'X-RapidAPI-Key': rapidApiKey,
   'X-RapidAPI-Host': 'coinranking1.p.rapidapi.com',
